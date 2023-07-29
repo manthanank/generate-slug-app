@@ -30,4 +30,10 @@ export class AppComponent {
       this.showCopyMessage = false;
     }, 2000); // Hide the message after 2 seconds
   }
+
+  clearInputs() {
+    this.title = '';
+    this.slug = '';
+    this.showCopyMessage = false;
+  }
 }
