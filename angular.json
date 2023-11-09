@@ -65,10 +65,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "generate-slug-app:build:production"
+              "buildTarget": "generate-slug-app:build:production"
             },
             "development": {
-              "browserTarget": "generate-slug-app:build:development"
+              "buildTarget": "generate-slug-app:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -76,7 +76,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "generate-slug-app:build"
+            "buildTarget": "generate-slug-app:build"
           }
         },
         "test": {
