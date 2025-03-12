@@ -1,4 +1,11 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  computed,
+  OnInit,
+  OnDestroy,
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -8,31 +15,35 @@ import {
 import { TrackService } from './services/track.service';
 import { Meta } from '@angular/platform-browser';
 import { Visit } from './models/visit.model';
+import { Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
-export class AppComponent {
-  private title = 'generate-slug-app';
+export class AppComponent implements OnInit, OnDestroy {
+  private readonly title = 'generate-slug-app';
   slugForm: FormGroup;
 
-  // Signals
   blogTitle = signal('');
   slug = computed(() => this.generateSlug(this.blogTitle()));
   showCopyMessage = signal(false);
   visitorCount = signal(0);
 
-  // Services
+  getBlogTitleLength = computed(() => {
+    const title = this.blogTitle();
+    return title ? title.length : 0;
+  });
+
   private trackService = inject(TrackService);
   private meta = inject(Meta);
   private fb = inject(FormBuilder);
 
+  private formSubscription: Subscription | undefined;
+
   constructor() {
-    // Basic meta tags
     this.meta.addTags([
       {
         name: 'viewport',
@@ -59,10 +70,6 @@ export class AppComponent {
         name: 'robots',
         content: 'index, follow',
       },
-    ]);
-
-    // OpenGraph meta tags
-    this.meta.addTags([
       {
         property: 'og:title',
         content: 'Blog Slug Generator',
@@ -88,13 +95,24 @@ export class AppComponent {
         ],
       ],
     });
-    // Subscribe to form changes
-    this.slugForm.get('title')?.valueChanges.subscribe((value) => {
-      this.blogTitle.set(value);
-    });
+
+    this.formSubscription = this.slugForm
+      .get('title')
+      ?.valueChanges.pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe((value) => {
+        this.blogTitle.set(value || '');
+      });
   }
 
   ngOnInit(): void {
+    this.trackProjectVisit();
+  }
+
+  ngOnDestroy(): void {
+    this.formSubscription?.unsubscribe();
+  }
+
+  private trackProjectVisit(): void {
     this.trackService.trackProjectVisit(this.title).subscribe({
       next: (response: Visit) => {
         this.visitorCount.set(response.uniqueVisitors);
@@ -126,12 +144,7 @@ export class AppComponent {
   }
 
   clearInputs(): void {
-    this.blogTitle.set('');
+    this.slugForm.reset();
     this.showCopyMessage.set(false);
-  }
-
-  updateBlogTitle(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.blogTitle.set(input.value);
   }
 }

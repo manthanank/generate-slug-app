@@ -11,19 +11,24 @@
       </label>
       <input type="text" id="title" formControlName="title"
         class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-        placeholder="Enter your blog post title" aria-label="Blog post title input">
+        placeholder="Enter your blog post title" aria-label="Blog post title input" maxlength="100" />
+      @if (slugForm.get('title')?.errors) {
       @if(slugForm.get('title')?.errors?.['required'] && slugForm.get('title')?.touched) {
       <p class="text-red-500 text-sm mt-1">Title is required</p>
       }
       @if(slugForm.get('title')?.errors?.['minlength']) {
       <p class="text-red-500 text-sm mt-1">Title must be at least 3 characters</p>
       }
+      @if(slugForm.get('title')?.errors?.['maxlength']) {
+      <p class="text-red-500 text-sm mt-1">Title can be at most 100 characters</p>
+      }
+      }
     </div>
 
     <div class="form-group">
       <label for="slug" class="block text-sm font-medium mb-2">Generated Slug</label>
       <input type="text" id="slug" [value]="slug()" readonly class="w-full px-4 py-2 bg-gray-50 border rounded-lg"
-        aria-label="Generated slug output">
+        aria-label="Generated slug output" />
     </div>
 
     <div class="flex items-center gap-4">
@@ -39,7 +44,7 @@
         Clear
       </button>
 
-      @if(showCopyMessage()) {
+      @if (showCopyMessage()) {
       <span class="text-green-600 text-sm animate-fade-in" role="status" aria-live="polite">
         Copied to clipboard! ✓
       </span>
