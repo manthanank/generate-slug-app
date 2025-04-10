@@ -13,6 +13,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { TrackService } from './services/track.service';
+import { ThemeService } from './services/theme.service';
 import { Meta } from '@angular/platform-browser';
 import { Visit } from './models/visit.model';
 import { Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
@@ -32,6 +33,8 @@ export class AppComponent implements OnInit, OnDestroy {
   showCopyMessage = signal(false);
   visitorCount = signal(0);
 
+  currentYear = new Date().getFullYear();
+
   getBlogTitleLength = computed(() => {
     const title = this.blogTitle();
     return title ? title.length : 0;
@@ -40,6 +43,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private trackService = inject(TrackService);
   private meta = inject(Meta);
   private fb = inject(FormBuilder);
+  themeService = inject(ThemeService);
 
   private formSubscription: Subscription | undefined;
 
@@ -110,6 +114,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.formSubscription?.unsubscribe();
+  }
+
+  toggleTheme(): void {
+    this.themeService.toggleTheme();
   }
 
   private trackProjectVisit(): void {

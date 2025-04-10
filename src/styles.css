@@ -1,2 +1,27 @@
 /* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+
+@layer base {
+  .dark {
+    --bg-primary: #0f172a;
+    --text-primary: #f1f5f9;
+    --border-color: #334155;
+  }
+
+  body {
+    @apply bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100;
+    @apply transition-colors duration-200;
+  }
+}
+
+/* Custom animation for copy message */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
