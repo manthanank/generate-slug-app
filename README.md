@@ -5,13 +5,15 @@ A simple web application built with Angular that generates SEO-friendly URL slug
 ## Features
 
 - Real-time slug generation as you type
+- Dark and light theme support with user preference persistence
 - Converts titles to lowercase
 - Replaces spaces and special characters with hyphens
 - Removes leading and trailing hyphens
-- Copy slug to clipboard functionality
-- Clear input fields
+- One-click copy to clipboard functionality
+- Visitor tracking with real-time counter
+- Form validation with helpful error messages
 - Fully responsive design with Tailwind CSS
-- Accessible UI with ARIA labels
+- Accessible UI with ARIA labels and semantic HTML
 
 ## Tech Stack
 
@@ -67,6 +69,11 @@ npm test
 generate-slug-app/
 ├── src/
 │   ├── app/
+│   │   ├── models/
+│   │   │   └── visit.model.ts
+│   │   ├── services/
+│   │   │   ├── theme.service.ts
+│   │   │   └── track.service.ts
 │   │   ├── app.component.ts
 │   │   ├── app.component.html
 │   │   ├── app.component.css
